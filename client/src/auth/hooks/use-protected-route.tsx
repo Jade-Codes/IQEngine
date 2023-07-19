@@ -20,7 +20,7 @@ export function useProtectedRoute(children) {
     instance
       .acquireTokenSilent(accessTokenRequest)
       .then((accessTokenResponse) => {
-        let accessToken = accessTokenResponse.accessToken;
+        let accessToken = accessTokenResponse.idToken;
         console.log(accessToken);
       })
       .catch((error) => {
