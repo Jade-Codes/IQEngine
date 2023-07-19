@@ -28,7 +28,7 @@ export function useProtectedRoute(children) {
           instance
             .acquireTokenPopup(accessTokenRequest)
             .then(function (accessTokenResponse) {
-              let accessToken = accessTokenResponse.accessToken;
+              let accessToken = accessTokenResponse.idToken;
               console.log(accessToken);
             })
             .catch(function (error) {
