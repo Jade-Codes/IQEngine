@@ -53,7 +53,6 @@ export function useRouter() {
               },
             };
           },
-
           children: [
             {
               path: '',
