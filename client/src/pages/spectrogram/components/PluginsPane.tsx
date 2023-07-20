@@ -24,6 +24,7 @@ export interface PluginsPaneProps {
   handleProcessTime: () => { trimmedSamples: number[]; startSampleOffset: number };
   meta: SigMFMetadata;
   setMeta: (meta: SigMFMetadata) => void;
+  selectedAnnotation: number;
 }
 
 export enum MimeTypes {
@@ -33,28 +34,57 @@ export enum MimeTypes {
   audio_wav = 'audio/wav',
 }
 
-export const PluginsPane = ({ cursorsEnabled, handleProcessTime, meta, setMeta }: PluginsPaneProps) => {
+export const PluginsPane = ({
+  cursorsEnabled,
+  handleProcessTime,
+  meta,
+  setMeta,
+  selectedAnnotation,
+}: PluginsPaneProps) => {
   const { account, container, filename } = useParams();
   const { data: plugins, isError } = useGetPlugins();
   const { PluginOption, EditPluginParameters, pluginParameters, setPluginParameters } = useGetPluginsComponents();
   const [selectedPlugin, setSelectedPlugin] = useState('');
+  const [selectedMethod, setSelectedMethod] = useState('');
   const [modalOpen, setModalOpen] = useState(false);
   const [modalSamples, setModalSamples] = useState([]);
   const [modalSpectrogram, setmodalSpectrogram] = useState(null);
   const [useCloudStorage, setUseCloudStorage] = useState(true);
   const { dataSourcesQuery } = useUserSettings();
+  const [prePopulatedValues, setPrePopulatedValues] = useState({});
   const connectionInfo = dataSourcesQuery?.data[`${account}/${container}`];
 
+  const handlePrePopulatedValues = () => {
+    if (selectedMethod == 'annotation' && selectedAnnotation != -1) {
+      const annotation = meta.annotations[selectedAnnotation];
+      setPrePopulatedValues({
+        start_freq: annotation['core:freq_lower_edge'],
+        end_freq: annotation['core:freq_upper_edge'],
+      });
+    } else {
+      setPrePopulatedValues({});
+    }
+  };
+
   const handleChangePlugin = (e) => {
+    handlePrePopulatedValues();
     setSelectedPlugin(e.target.value);
+  };
+
+  const handleChangeMethod = (e) => {
+    handlePrePopulatedValues();
+    setSelectedMethod(e.target.value);
   };
 
   const handleSubmit = (e) => {
     console.log('Plugin Params:', pluginParameters);
     e.preventDefault();
 
-    if (!cursorsEnabled) {
+    if (!cursorsEnabled && selectedMethod == 'cursor') {
       toast.error('First enable cursors and choose a region of time to run the plugin on');
+      return;
+    } else if (selectedAnnotation == -1 && selectedMethod == 'annotation') {
+      toast.error('First select an annotation to run the plugin on');
       return;
     }
 
@@ -250,6 +280,17 @@ export const PluginsPane = ({ cursorsEnabled, handleProcessTime, meta, setMeta }
   return (
     <div className="pluginForm" id="pluginFormId" onSubmit={handleSubmit}>
       <label className="label">
+        Method:
+        <select
+          className="rounded bg-base-content text-base-100 w-44"
+          value={selectedMethod}
+          onChange={handleChangeMethod}
+        >
+          <option value="cursor">Cursor</option>
+          <option value="annotation">Annotation</option>
+        </select>
+      </label>
+      <label className="label">
         Plugin:
         <select
           className="rounded bg-base-content text-base-100 w-44"
@@ -283,6 +324,7 @@ export const PluginsPane = ({ cursorsEnabled, handleProcessTime, meta, setMeta }
             handleSubmit={handleSubmit}
             setPluginParameters={setPluginParameters}
             pluginParameters={pluginParameters}
+            prePopulatedValues={prePopulatedValues}
           />
           <button onClick={handleSubmit}>Run Plugin</button>
         </>
