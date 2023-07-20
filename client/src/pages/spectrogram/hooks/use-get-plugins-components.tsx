@@ -27,22 +27,32 @@ interface PluginParametersProps {
   handleSubmit: (e: any) => void;
   setPluginParameters: Dispatch<SetStateAction<PluginParameters>>;
   pluginParameters: PluginParameters;
+  prePopulatedValues: { [key: string]: string };
 }
 
-export function EditPluginParameters({ pluginUrl, setPluginParameters, pluginParameters }: PluginParametersProps) {
-  const { data: parameters } = useGetPluginParameters(pluginUrl);
+export function EditPluginParameters({
+  pluginUrl,
+  setPluginParameters,
+  pluginParameters,
+  prePopulatedValues,
+}: PluginParametersProps) {
+  let { data: parameters } = useGetPluginParameters(pluginUrl);
   useEffect(() => {
     console.log('parameters', parameters);
+
     if (parameters) {
       for (const key in parameters) {
         parameters[key] = {
           title: key,
           type: parameters[key].type,
           default: parameters[key].default,
-          value: parameters[key].default,
+          value:
+            prePopulatedValues != null ? prePopulatedValues[key] ?? parameters[key].default : parameters[key].default,
         };
       }
       setPluginParameters(parameters);
+    } else {
+      setPluginParameters(null);
     }
   }, [parameters, setPluginParameters]);
 
