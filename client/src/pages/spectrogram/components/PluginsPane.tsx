@@ -18,10 +18,11 @@ import { toast } from 'react-hot-toast';
 import { dataTypeToBytesPerSample } from '@/utils/selector';
 import { useParams } from 'react-router-dom';
 import { useUserSettings } from '@/api/user-settings/use-user-settings';
+import { TILE_SIZE_IN_IQ_SAMPLES } from '@/utils/constants';
 
 export interface PluginsPaneProps {
   cursorsEnabled: boolean;
-  handleProcessTime: () => { trimmedSamples: number[]; startSampleOffset: number };
+  handleProcessTime;
   meta: SigMFMetadata;
   setMeta: (meta: SigMFMetadata) => void;
   selectedAnnotation: number;
@@ -76,6 +77,16 @@ export const PluginsPane = ({
     setSelectedMethod(e.target.value);
   };
 
+  const getProcessingTime = () => {
+    if (selectedMethod == 'annotation') {
+      const start = meta.annotations[selectedAnnotation]['core:sample_start'] / TILE_SIZE_IN_IQ_SAMPLES;
+      const end = (start + meta.annotations[selectedAnnotation]['core:sample_count']) / TILE_SIZE_IN_IQ_SAMPLES;
+
+      return handleProcessTime(start, end);
+    }
+    return handleProcessTime();
+  };
+
   const handleSubmit = (e) => {
     console.log('Plugin Params:', pluginParameters);
     e.preventDefault();
@@ -89,7 +100,7 @@ export const PluginsPane = ({
     }
 
     // this does the tile calc and gets the right samples in currentSamples
-    const { trimmedSamples, startSampleOffset } = handleProcessTime();
+    const { trimmedSamples, startSampleOffset } = getProcessingTime();
 
     const sampleRate = meta.getSampleRate();
     const freq = meta.getCenterFrequency();

@@ -29,7 +29,7 @@ export interface SidebarProps {
   setMeta: (meta: SigMFMetadata) => void;
   colorMap: any;
   setColorMap: any;
-  selectedAnnotation: any;
+  selectedAnnotation: number;
 }
 
 const Sidebar = (props) => {

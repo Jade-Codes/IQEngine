@@ -264,13 +264,18 @@ export const SpectrogramPage = () => {
     setIncludeRfFreq(!includeRfFreq);
   };
 
-  const handleProcessTime = () => {
+  const handleProcessTime = (timeStart = timeSelectionStart, timeEnd = timeSelectionEnd) => {
     if (!meta) {
       return;
     }
     // these 2 are in units of tile (incl fraction of a tile)
     // Concatenate and trim the IQ Data associated with this range of samples
-    const tiles = range(Math.floor(timeSelectionStart), Math.ceil(timeSelectionEnd)); //non-inclusive of end, e.g. if it ends with tile 7.2 we only want tile 7 not 8
+    let tiles = [];
+    if (timeStart < timeEnd) {
+      tiles = range(Math.floor(timeStart), Math.ceil(timeEnd)); //non-inclusive of end, e.g. if it ends with tile 7.2 we only want tile 7 not 8
+    } else {
+      tiles = range(Math.floor(timeEnd), Math.ceil(timeStart)); //non-inclusive of end, e.g. if it ends with tile 7.2 we only want tile 7 not 8
+    }
     let bufferLen = tiles?.length * TILE_SIZE_IN_IQ_SAMPLES * 2; // number of floats
 
     let currentSamples = new Float32Array(bufferLen);
@@ -285,14 +290,14 @@ export const SpectrogramPage = () => {
     }
 
     // Trim off the top and bottom
-    let lowerTrim = Math.floor((timeSelectionStart - Math.floor(timeSelectionStart)) * TILE_SIZE_IN_IQ_SAMPLES * 2); // floats to get rid of at start
+    let lowerTrim = Math.floor((timeStart - Math.floor(timeStart)) * TILE_SIZE_IN_IQ_SAMPLES * 2); // floats to get rid of at start
     if (lowerTrim % 2 == 1) lowerTrim--; // must be even, since IQ
-    let upperTrim = Math.floor((1 - (timeSelectionEnd - Math.floor(timeSelectionEnd))) * TILE_SIZE_IN_IQ_SAMPLES * 2); // floats to get rid of at end
+    let upperTrim = Math.floor((1 - (timeEnd - Math.floor(timeEnd))) * TILE_SIZE_IN_IQ_SAMPLES * 2); // floats to get rid of at end
     if (upperTrim % 2 == 1) upperTrim--; // must be even, since IQ
     const trimmedSamples = currentSamples.slice(lowerTrim, bufferLen - upperTrim); // slice uses (start, end]
     setCurrentSamples(trimmedSamples);
 
-    const startSampleOffset = timeSelectionStart * TILE_SIZE_IN_IQ_SAMPLES; // in IQ samples
+    const startSampleOffset = timeStart * TILE_SIZE_IN_IQ_SAMPLES; // in IQ samples
     return { trimmedSamples: trimmedSamples, startSampleOffset: startSampleOffset }; // only used by plugins
   };
 

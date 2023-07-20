@@ -169,7 +169,7 @@ const AnnotationViewer = ({
 
   const onBoxCornerClick = useCallback(
     (e) => {
-      const annot_indx = e.target.id().split('-')[0];
+      const annot_indx = Number(e.target.id().split('-')[0]);
       setSelectedAnnotation(annot_indx);
     },
     [setSelectedAnnotation]
@@ -177,7 +177,7 @@ const AnnotationViewer = ({
 
   const onBoxClick = useCallback(
     (e) => {
-      const annot_indx = e.target.id();
+      const annot_indx = Number(e.target.id());
       setSelectedAnnotation(annot_indx);
     },
     [setSelectedAnnotation]
