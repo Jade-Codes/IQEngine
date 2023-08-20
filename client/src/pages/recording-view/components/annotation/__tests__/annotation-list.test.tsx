@@ -35,7 +35,7 @@ describe('Annotation list component', () => {
       .get('/api/datasources/testaccount/testcontainer/test_file_path/meta')
       .reply(200, meta);
     // Act
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -71,7 +71,7 @@ describe('Annotation list component', () => {
       .get('/api/datasources/testaccount/testcontainer/test_file_path/meta')
       .reply(200, meta);
     // Act
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -137,7 +137,7 @@ describe('Annotation list component', () => {
           filePath={'test_file_path'}
           type={'api'}
         >
-          <AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>
+          <AnnotationList setCurrentFFT={() => {}}></AnnotationList>
         </SpectrogramContextProvider>
       </AllProviders>
     );
@@ -177,7 +177,7 @@ describe('Annotation list component', () => {
       .reply(200, meta);
 
     // Act
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -223,7 +223,7 @@ describe('Annotation list component', () => {
       .get('/api/datasources/testaccount/testcontainer/test_file_path/meta')
       .reply(200, meta);
 
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -281,7 +281,7 @@ describe('Annotation list component', () => {
       .get('/api/datasources/testaccount/testcontainer/test_file_path/meta')
       .reply(200, meta);
 
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -330,7 +330,7 @@ describe('Annotation list component', () => {
       .get('/api/datasources/testaccount/testcontainer/test_file_path/meta')
       .reply(200, meta);
     // Act
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -383,7 +383,7 @@ describe('Annotation list component', () => {
           filePath={'test_file_path'}
           type={'api'}
         >
-          <AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>
+          <AnnotationList setCurrentFFT={() => {}}></AnnotationList>
         </SpectrogramContextProvider>
       </AllProviders>
     );
@@ -424,7 +424,7 @@ describe('Annotation list component', () => {
       .reply(200, meta);
 
     // Act
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -458,7 +458,7 @@ describe('Annotation list component', () => {
       .reply(200, meta);
 
     // Act
-    render(<AnnotationList setCurrentFFT={() => {}} currentFFT={0}></AnnotationList>, {
+    render(<AnnotationList setCurrentFFT={() => {}}></AnnotationList>, {
       wrapper: ({ children }) => (
         <AllProviders>
           <SpectrogramContextProvider
@@ -474,9 +474,7 @@ describe('Annotation list component', () => {
     });
 
     // Assert
-    act(async () => {
-      const current = await screen.findByRole(type, { name: label });
-      expect(current).toHaveValue(expected);
-    });
+    const current = await screen.findByRole(type, { name: label });
+    expect(current).toHaveValue(expected);
   });
 });
